@@ -1,4 +1,4 @@
-#Part 3 Loops
+# Lab 2 Part 3 - Loops
 
 .data
 

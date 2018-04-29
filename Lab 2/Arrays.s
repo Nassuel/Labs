@@ -1,4 +1,4 @@
-# Lab 2 Part 2 - Branches
+# Lab 2 Part 4 - Arrays
 
     .data   # Data declaration section
 
@@ -10,9 +10,9 @@ bArray:   .word    1, 2, 4, 8, 16
 main:       # Start of code section
     
     # Read variables from memory to registers
-    li  t1, 0        # Load variable 
-    la 	s1, aArray	# Load A array reference into t0
-    la 	s0, bArray	# Load B into t1
+    li  t1, 0        	# Load variable 
+    la 	s1, aArray		# Load A array reference into s0
+    la 	s0, bArray		# Load B into s0
     
     # For loop
     forLoop: slti t0, t1, 5
