@@ -4,8 +4,8 @@
 
 varA:   .word   10
 varB:   .word   15
-varC:   .word   6
-varZ:   .word   0
+varC:   .word   4
+varZ:   .word   1
 
     .text
 

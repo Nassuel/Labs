@@ -74,6 +74,14 @@ architecture memmy of register8 is
 	end component;
 begin
 	-- insert your code here.
+	reg8: bitstorage port map(datain(7), enout, writein, dataout(7));
+	reg7: bitstorage port map(datain(6), enout, writein, dataout(6));
+	reg6: bitstorage port map(datain(5), enout, writein, dataout(5));
+	reg5: bitstorage port map(datain(4), enout, writein, dataout(4));
+	reg4: bitstorage port map(datain(3), enout, writein, dataout(3));
+	reg3: bitstorage port map(datain(2), enout, writein, dataout(2));
+	reg2: bitstorage port map(datain(1), enout, writein, dataout(1));
+	reg1: bitstorage port map(datain(0), enout, writein, dataout(0));
 end architecture memmy;
 
 --------------------------------------------------------------------------------
@@ -92,8 +100,28 @@ end entity register32;
 architecture biggermem of register32 is
 	-- hint: you'll want to put register8 as a component here 
 	-- so you can use it below
+	component register8
+	port(datain: in std_logic_vector(7 downto 0);
+	     enout:  in std_logic;
+	     writein: in std_logic;
+	     dataout: out std_logic_vector(7 downto 0));
+
+	SIGNAL enabler: 	std_logic_vector(2 downto 0);
+	SIGNAL writer: 	std_logic_vector(2 downto 0);
 begin
 	-- insert code here.
+	enabler(2) <= enout32;
+	enabler(1) <= enout16 and enout32;
+	enabler(0) <= enout8 and enout16;
+
+	writer(2) <= write32;
+	writer(1) <= write16 or write32;
+	wrtier(0) <= write8 or write16;
+
+	reg32: register8 port map(datain(31 downto 24), internal(2), writer(2), dataout(31 downto 24))
+	reg24: register8 port map(datain(23 downto 16), internal(2), writer(2), dataout(23 downto 16))
+	reg16: register8 port map(datain(15 downto 8),  internal(1), writer(1), dataout(15 downto 8))
+	reg08: register8 port map(datain(7 downto 0),   internal(0), writer(0), dataout(7 downto 0))
 end architecture biggermem;
 
 --------------------------------------------------------------------------------
@@ -111,9 +139,25 @@ entity adder_subtracter is
 end entity adder_subtracter;
 
 architecture calc of adder_subtracter is
-
+	component fulladder
+		port (a : in std_logic;
+			   b : in std_logic;
+			   cin : in std_logic;
+			   sum : out std_logic;
+			   carry : out std_logic
+			     );
+	end component;
+	
+	SIGNAL c : std_logic_vector (32 downto 0);
 begin
 	-- insert code here.
+	c(0) <= add_sub;
+	co <= c(32);
+	FullAdder: 
+	    For i in 0 to 31 generate
+		    FA1: fulladder PORT MAP (datain_a(i), datain_b(i), c(i), dataout(i), c(i+1));
+		end generate;
+		
 end architecture calc;
 
 --------------------------------------------------------------------------------
@@ -133,6 +177,7 @@ architecture shifter of shift_register is
 	
 begin
 	-- insert code here.
+	
 end architecture shifter;
 
 
