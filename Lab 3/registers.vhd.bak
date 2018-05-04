@@ -121,7 +121,7 @@ begin
 	reg32: register8 port map(datain(31 downto 24), enabler(2), writer(2), dataout(31 downto 24));
 	reg24: register8 port map(datain(23 downto 16), enabler(2), writer(2), dataout(23 downto 16));
 	reg16: register8 port map(datain(15 downto 8),  enabler(1), writer(1), dataout(15 downto 8));
-	reg08: register8 port map(datain(7 downto 0),   enabler(0), writer(0), dataout(7 downto 0));
+	reg08: register8 port map(datain(7 downto 0),   internal(0), writer(0), dataout(7 downto 0));
 end architecture biggermem;
 
 --------------------------------------------------------------------------------
