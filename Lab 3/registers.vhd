@@ -110,11 +110,11 @@ architecture biggermem of register32 is
 	signal writer: 	std_logic_vector(2 downto 0);
 begin
 	-- insert code here.
-	enabler(2) <= enout32;
+	enabler(2) <= enout32; --active low
 	enabler(1) <= enout16 and enout32;
 	enabler(0) <= enout8 and enout16;
 
-	writer(2) <= writein32;
+	writer(2) <= writein32; --active high
 	writer(1) <= writein16 or writein32;
 	writer(0) <= writein8 or writein16;
 
@@ -149,12 +149,16 @@ architecture calc of adder_subtracter is
 	end component;
 	
 	signal c : std_logic_vector (32 downto 0);
+	signal b : std_logic_vector (31 downto 0);
 begin
 	-- insert code here.
+	with add_sub select 
+	b <= not (datain_b) when '1',
+		   datain_b when others;
 	c(0) <= add_sub;
 	co <= c(32);
-	FullAdder: For i in 0 to 31 generate
-		    FA1: fulladder PORT MAP (datain_a(i), datain_b(i), c(i), dataout(i), c(i+1));
+	adder: For i in 0 to 31 generate
+		    FA1: fulladder PORT MAP (datain_a(i), b(i), c(i), dataout(i), c(i+1));
 		end generate;
 		
 end architecture calc;
@@ -173,11 +177,21 @@ entity shift_register is
 end entity shift_register;
 
 architecture shifter of shift_register is
+	COMPONENT shift_register
+	PORT(datain: in std_logic_vector(31 downto 0);
+	   	dir: in std_logic;
+		shamt:	in std_logic_vector(4 downto 0);
+		dataout: out std_logic_vector(31 downto 0));
+	END COMPONENT;
 	
 begin
 	-- insert code here.
-	
+	with shamt & dir select
+	dataout <= 	datain(30 downto 0) & '0'  	when "000010", --shift left by 1
+		  '0' & datain(31 downto 1)  		when "000011", --shift right by 1
+		 	datain(29 downto 0) & "00"	when "000100", --shift left by 2
+		 "00" & datain(31 downto 2) 		when "000101", --shift right by 2
+			datain(28 downto 0) & "000" 	when "000110", --shift left by 3
+		"000" & datain(31 downto 3)		when "000111", --shift right by 3
+			datain(31 downto 0) 		when others;
 end architecture shifter;
-
-
-
