@@ -112,11 +112,11 @@ begin
 	-- insert code here.
 	enabler(2) <= enout32; --active low
 	enabler(1) <= enout16 and enout32;
-	enabler(0) <= enout8 and enout16;
+	enabler(0) <= enout8 and enout16 and enout32;
 
 	writer(2) <= writein32; --active high
 	writer(1) <= writein16 or writein32;
-	writer(0) <= writein8 or writein16;
+	writer(0) <= writein8 or writein16 or writein32;
 
 	reg32: register8 port map(datain(31 downto 24), enabler(2), writer(2), dataout(31 downto 24));
 	reg24: register8 port map(datain(23 downto 16), enabler(2), writer(2), dataout(23 downto 16));
