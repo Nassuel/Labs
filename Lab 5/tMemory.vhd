@@ -191,56 +191,63 @@ BEGIN
 
 		-- Register Bank tests
 		dataIn   <= X"11111111";
-		writeReg <= "01010";
+		writeReg <= "01010"; --a0
 		writeCmd <= '1';
 		wait for 5 ns;	
 		writeCmd <= '0';
 		wait for 5 ns;	
 
 		dataIn   <= X"22222222";
-		writeReg <= "01011";
+		writeReg <= "01011"; --a1
 		writeCmd <= '1';
 		wait for 5 ns;	
 		writeCmd <= '0';
 		wait for 5 ns;	
 
 		dataIn   <= X"33333333";
-		writeReg <= "01100";
+		writeReg <= "01100"; --a2
 		writeCmd <= '1';
 		wait for 5 ns;	
 		writeCmd <= '0';
 		wait for 5 ns;	
 
 		dataIn   <= X"44444444";
-		writeReg <= "01101";
+		writeReg <= "01101"; --a3
 		writeCmd <= '1';
 		wait for 5 ns;	
 		writeCmd <= '0';
 		wait for 5 ns;	
 
 		dataIn   <= X"55555555";
-		writeReg <= "01110";
+		writeReg <= "01110"; --a4
 		writeCmd <= '1';
 		wait for 5 ns;	
 		writeCmd <= '0';
 		wait for 5 ns;	
 
 		dataIn   <= X"66666666";
-		writeReg <= "01111";
+		writeReg <= "01111"; --a5
 		writeCmd <= '1';
 		wait for 5 ns;	
 		writeCmd <= '0';
 		wait for 5 ns;	
 
 		dataIn   <= X"77777777";
-		writeReg <= "10000";
+		writeReg <= "10000"; --a6
 		writeCmd <= '1';
 		wait for 5 ns;	
 		writeCmd <= '0';
 		wait for 5 ns;	
 
 		dataIn   <= X"88888888";
-		writeReg <= "10001";
+		writeReg <= "10001"; --a7
+		writeCmd <= '1';
+		wait for 5 ns;	
+		writeCmd <= '0';
+		wait for 5 ns;	
+
+		dataIn   <= X"99999999";
+		writeReg <= "00000"; --x0
 		writeCmd <= '1';
 		wait for 5 ns;	
 		writeCmd <= '0';
