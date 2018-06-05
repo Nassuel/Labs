@@ -117,16 +117,16 @@ begin
 	-- TO DO: 1) write all internal in/out signals for components
         --        2) port map all signals
 	-- Muxes
-	ALUMux: BusMux2to1  port map(CtrlALUSrc, ReadD2, , ALUMuxOut); -- ImmGen output goes into the missing port
-	AddMux: BusMux2to1  port map();
+	ALUMux: BusMux2to1 port map(CtrlALUSrc, ReadD2, , ALUMuxOut); -- ImmGen output goes into the missing port
+	AddMux: BusMux2to1 port map();
 	DMemMux: BusMux2to1 port map()
 
 	-- Major components
-	PC: ProgramCounter  port map(reset, clock, AddSumMuxOut, instruction); -- Mux after adder into missing port
-	Ctrl: Control 	    port map(clock, instruction(6 downto 0), instruction(14 downto 12), instruction(31 downto 27), CtrlBranch, CtrlMemRead, CtrlMemtoReg, CtrlALUCtrl, CtrlRegWrite, CtrlImmGen);
-	Regs: Registers     port map(instruction(19 downto 15), instruction(24 downto 20), instruction(11 downto 7), , ReadD1, ReadD2); -- Data Memory mux to missing port
+	PC: ProgramCounter port map(reset, clock, AddSumMuxOut, instruction); -- Mux after adder into missing port
+	Ctrl: Control 	   port map(clock, instruction(6 downto 0), instruction(14 downto 12), instruction(31 downto 27), CtrlBranch, CtrlMemRead, CtrlMemtoReg, CtrlALUCtrl, CtrlRegWrite, CtrlImmGen);
+	Regs: Registers    port map(instruction(19 downto 15), instruction(24 downto 20), instruction(11 downto 7), , ReadD1, ReadD2); -- Data Memory mux to missing port
 	-- Donde esta el componente ImmGen?
 
-	ArithLU: ALU       port map(); 
+	ArithLU: ALU port map(); 
 end holistic;
 
