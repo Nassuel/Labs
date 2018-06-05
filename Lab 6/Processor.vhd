@@ -85,10 +85,29 @@ architecture holistic of Processor is
 			co: out std_logic);
 	end component adder_subtracter;
 	
+	-- Program Counter Output
+	signal ReadAddress : std_logic_vector(31 downto 0);	-- Program Counter to Instruction Memory
+	
+	-- Intruction Memory Output
+	signal instruction : std_logic_vector(31 downto 0); 	-- Instruction Memory to Control, Registers, ImmGen
+
+	-- Control output signals
+	signal CtrlBranch  : std_logic;				-- Control to Branch (Eq | Not Eq)
+	signal CtrlMemRead : std_logic;				-- Control to Data Memory
+	signal CtrlALUCtrl : std_logic;				-- Control to ALU
+	signal CtrlMemWrite: std_logic;				-- Control to Data Memory
+	signal CtrlALUSrc  : std_logic;				-- Control to Mux before ALU
+	signal CtrlRegWrite: std_logic;				-- Control to Registers
+	signal CtrlImmGen  : std_logic;
 	
 begin
 	-- Add your code here
 	-- TO DO: 1) write all internal in/out signals for components
         --        2) port map all signals
+	PC: ProgramCounter port map(reset, clock, , instruction);	-- Program Counter
+
+	C: Control port map(clock, instruction(6 downto 0), instruction(14 downto 12), instruction(31 downto 27), CtrlBranch, CtrlMemRead, CtrlALUCtrl, CtrlRegWrite, CtrlImmGen);
+
+	Regs: Registers port map(instruction(19 downto 15), instruction(24 downto 20), instruction(11 downto 7), );
 end holistic;
 
