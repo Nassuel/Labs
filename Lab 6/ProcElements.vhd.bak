@@ -17,9 +17,7 @@ end entity BusMux2to1;
 architecture selection of BusMux2to1 is
 begin
 -- Add your code here
-	with selector select
-	Result <= In0 when '0', 
-		  In1 when others;
+	
 end architecture selection;
 
 --------------------------------------------------------------------------------
