@@ -84,8 +84,11 @@ architecture holistic of Processor is
 			dataout: out std_logic_vector(31 downto 0);
 			co: out std_logic);
 	end component adder_subtracter;
-
+	
+	
 begin
 	-- Add your code here
+	-- TO DO: 1) write all internal in/out signals for components
+        --        2) port map all signals
 end holistic;
 
