@@ -107,16 +107,16 @@ architecture holistic of Processor is
 	signal CtrlImmGen  : std_logic_vector(1 downto 0);	-- Control to ImmGen
 
 	-- Registers Output
-	signal ReadD1      : std_logic_vector(31 downto 0);
-	signal ReadD2      : std_logic_vector(31 downto 0);
+	signal ReadD1      : std_logic_vector(31 downto 0);	-- Registers to ALU
+	signal ReadD2      : std_logic_vector(31 downto 0);	-- Registers to ALUMux
 
 	-- Data Memory Output
 	signal ReadD	   : std_logic_vector(31 downto 0);
 
 	-- Muxes output
 	signal ALUMuxOut   : std_logic_vector(31 downto 0);	-- Mux to ALU
-	signal DMemMuxOut  : std_logic_vector(31 downto 0);
-	signal AddSumMuxOut: std_logic_vector(31 downto 0);
+	signal DMemMuxOut  : std_logic_vector(31 downto 0);	-- Mux to Register Write Data
+	signal AddSumMuxOut: std_logic_vector(31 downto 0);	-- Mux to PC
 
 	signal ALUZero     : std_logic;
 begin
@@ -130,7 +130,7 @@ begin
 
 	-- Adders
 	PreAdder: adder_subtracter port map(PCOut, "100", '0', AddOut1, c01);
-	AddSumAdder: adder_subtacter port map(AddOut1, here, '0', AddOut2, c02); -- ImmGen output should be on missing spot
+	AddSumAdder: adder_subtacter port map(PCOut, here, '0', AddOut2, c02); -- ImmGen output should be on missing spot
 
 	-- Major components
 	PC: ProgramCounter   port map(reset, clock, AddSumMuxOut, PCOut);

@@ -107,16 +107,16 @@ architecture holistic of Processor is
 	signal CtrlImmGen  : std_logic_vector(1 downto 0);	-- Control to ImmGen
 
 	-- Registers Output
-	signal ReadD1      : std_logic_vector(31 downto 0);
-	signal ReadD2      : std_logic_vector(31 downto 0);
+	signal ReadD1      : std_logic_vector(31 downto 0);	-- Registers to ALU
+	signal ReadD2      : std_logic_vector(31 downto 0);	-- Registers to ALUMux
 
 	-- Data Memory Output
-	signal ReadD	   : std_logic_vector(31 downto 0);
+	signal ReadD	   : std_logic_vector(31 downto 0);	-- 
 
 	-- Muxes output
 	signal ALUMuxOut   : std_logic_vector(31 downto 0);	-- Mux to ALU
-	signal DMemMuxOut  : std_logic_vector(31 downto 0);
-	signal AddSumMuxOut: std_logic_vector(31 downto 0);
+	signal DMemMuxOut  : std_logic_vector(31 downto 0);	-- Mux to Register Write Data
+	signal AddSumMuxOut: std_logic_vector(31 downto 0);	-- Mux to PC
 
 	signal ALUZero     : std_logic;
 begin
