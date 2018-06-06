@@ -86,7 +86,12 @@ architecture holistic of Processor is
 	end component adder_subtracter;
 	
 	-- Program Counter Output
-	signal ReadAddress : std_logic_vector(31 downto 0);	-- Program Counter to Instruction Memory
+	signal PCOut       : std_logic_vector(29 downto 0);	-- Program Counter to Instruction Memory
+
+	-- Adders signals
+	signal AddOut1	   : std_logic_vector(31 downto 0);
+	signal AddOut2	   : std_logic_vector(31 downto 0);
+	signal c01, c02	   : std_logic;
 	
 	-- Intruction Memory Output
 	signal instruction : std_logic_vector(31 downto 0); 	-- Instruction Memory to Control, Registers, ImmGen
@@ -113,25 +118,32 @@ architecture holistic of Processor is
 	signal DMemMuxOut  : std_logic_vector(31 downto 0);
 	signal AddSumMuxOut: std_logic_vector(31 downto 0);
 
-	signal MuxZero     : std_logic;
+	signal ALUZero     : std_logic;
 begin
 	-- Add your code here
 	-- TO DO: 1) write all internal in/out signals for components
         --        2) port map all signals
 	-- Muxes
-	ALUMux: BusMux2to1  port map(CtrlALUSrc, ReadD2, , ALUMuxOut); -- ImmGen output goes into the missing port
-	AddMux: BusMux2to1  port map();
-	DMemMux: BusMux2to1 port map(CtrlMemtoReg, ALUResultOut, ReadD, DMemMuxOut);
+	ALUMux: BusMux2to1   port map(CtrlALUSrc, ReadD2, here, ALUMuxOut); -- ImmGen output goes into the missing port
+	AddMux: BusMux2to1   port map(BranchOut, AddOut1, AddOut2, AddSumMuxOut);
+	DMemMux: BusMux2to1  port map(CtrlMemtoReg, ALUResultOut, ReadD, DMemMuxOut);
+
+	-- Adders
+	PreAdder: adder_subtracter port map(PCOut, "100", '0', AddOut1, c01);
+	AddSumAdder: adder_subtacter port map(AddOut1, here, '0', AddOut2, c02); -- ImmGen output should be on missing spot
 
 	-- Major components
-	PC: ProgramCounter  port map(reset, clock, AddSumMuxOut, ReadAddress);
+	PC: ProgramCounter   port map(reset, clock, AddSumMuxOut, PCOut);
 
-	IMEM: InstructionRAM port map(reset, clock, ReadAddress(31 downto 0), instruction);
+	IMEM: InstructionRAM port map(reset, clock, PCOut, instruction);
 
-	Ctrl: Control 	    port map(clock, instruction(6 downto 0), instruction(14 downto 12), instruction(31 downto 27), CtrlBranch, CtrlMemRead, CtrlMemtoReg, CtrlALUCtrl, CtrlRegWrite, CtrlImmGen);
+	Ctrl: Control 	     port map(clock, instruction(6 downto 0), instruction(14 downto 12), instruction(31 downto 27), CtrlBranch, CtrlMemRead, CtrlMemtoReg, CtrlALUCtrl, CtrlRegWrite, CtrlImmGen);
 
-	Regs: Registers     port map(instruction(19 downto 15), instruction(24 downto 20), instruction(11 downto 7), DMemMuxOut, CtrlRegWrite, ReadD1, ReadD2); -- Data Memory mux to missing port
+	Regs: Registers      port map(instruction(19 downto 15), instruction(24 downto 20), instruction(11 downto 7), DMemMuxOut, CtrlRegWrite, ReadD1, ReadD2);
 
 	-- Donde esta el componente ImmGen?
-	ArithLU: ALU       port map(ReadD1, ALUMuxOut, MuxZero, ALUResultOut); 
+
+	ArithLU: ALU         port map(ReadD1, ALUMuxOut, ALUZero, ALUResultOut);
+
+	DMem: RAM	     port map(reset, clock, CtrlMemRead, CtrlMemWrite, ALUResultOut(29 downto 0), ReadD2, ReadD);
 end holistic;
