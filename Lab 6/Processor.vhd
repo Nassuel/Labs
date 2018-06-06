@@ -119,13 +119,14 @@ architecture holistic of Processor is
 	signal AddSumMuxOut: std_logic_vector(31 downto 0);	-- Mux to PC
 
 	signal ALUZero     : std_logic;
+	signal BranchEqNot : std_logic;
 begin
 	-- Add your code here
 	-- TO DO: 1) write all internal in/out signals for components
         --        2) port map all signals
 	-- Muxes
 	ALUMux: BusMux2to1   port map(CtrlALUSrc, ReadD2, here, ALUMuxOut); -- ImmGen output goes into the missing port
-	AddMux: BusMux2to1   port map(BranchOut, AddOut1, AddOut2, AddSumMuxOut);
+	AddMux: BusMux2to1   port map(BranchEqNot, AddOut1, AddOut2, AddSumMuxOut);
 	DMemMux: BusMux2to1  port map(CtrlMemtoReg, ALUResultOut, ReadD, DMemMuxOut);
 
 	-- Adders
@@ -146,4 +147,9 @@ begin
 	ArithLU: ALU         port map(ReadD1, ALUMuxOut, ALUZero, ALUResultOut);
 
 	DMem: RAM	     port map(reset, clock, CtrlMemRead, CtrlMemWrite, ALUResultOut(29 downto 0), ReadD2, ReadD);
+
+	BranchEqNot <=   '1' when CtrlBranch & ALUZero = "101" | "010",
+		         '0' when others;
+	
+	 
 end holistic;
