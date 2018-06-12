@@ -44,7 +44,7 @@ begin
 	direction <= ALUCtrl(1) xor ALUCtrl(0);
 	
 	with ALUCtrl select
-	adds_subs <=   '1' when "00001",
+	adds_subs <=   '1' when "00001" | "00010",
 		       '0' when others;
 
 	with ALUCtrl select
@@ -66,5 +66,3 @@ begin
 	 
 
 end architecture ALU_Arch;
-
-
