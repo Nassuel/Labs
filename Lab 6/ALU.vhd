@@ -44,14 +44,13 @@ begin
 	direction <= ALUCtrl(1) xor ALUCtrl(0);
 	
 	with ALUCtrl select
-	adds_subs <=   '0' when "00000",
-		       '1' when "00001",
-		       'Z' when others;
+	adds_subs <=   '1' when "00001",
+		       '0' when others;
 
 	with ALUCtrl select
 	copy <=		DataIn1 and DataIn2 when "00011" |"00100",
 		     	DataIn1 or DataIn2 when "00101" | "00110", 
-		 	M1(31 downto 0) when "00000" | "00001",
+		 	M1(31 downto 0) when "00000" | "00001" | "00010",
 			M2(31 downto 0) when "00111" | "01000" | "01001" | "01010",
 			DataIn2(31 downto 0) when others;
 

@@ -151,21 +151,21 @@ begin
 	ArithLU: ALU         port map(ReadD1, ALUMuxOut, CtrlALUCtrl, ALUZero, ALUResultOut);
 
 	DMem: RAM	     port map(reset, clock, CtrlMemRead, CtrlMemWrite, ALUResultOut(31 downto 2), ReadD2, ReadD);
-	
+
 	with CtrlBranch & ALUZero select
 	BranchEqNot <=   '1' when "101",
                          '1' when "010",
 		         '0' when others;
-	
+
 	with CtrlImmGen & instruction(31) select
-	ImmGenOut <=   "11111111111111111111" & instruction(31 downto 20) when "001", 
-                       "00000000000000000000" & instruction(31 downto 20) when "000",
-		       "11111111111111111111" & instruction(31 downto 25) & instruction(11 downto 7) when "011",  
-                       "00000000000000000000" & instruction(31 downto 25) & instruction(11 downto 7) when "010",
-		       "11111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) when "101",	-- I suspect that there is an issue here. Ask Ken how is the immediate of the b-type structure built.
-                       "00000000000000000000" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) when "100",
-			       "111111111111" & instruction(31 downto 12) when "111", 
-                               "000000000000" & instruction(31 downto 12) when "110", 
+	ImmGenOut <=   "111111111111111111111" & instruction(30 downto 20) when "001",  --I_type
+                       "000000000000000000000" & instruction(30 downto 20) when "000",  --I_type
+		       "111111111111111111111" & instruction(30 downto 25) & instruction(11 downto 7) when "011",  --S_type
+                       "000000000000000000000" & instruction(30 downto 25) & instruction(11 downto 7) when "010",  --S_type
+		        "11111111111111111111" & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & '0' when "101", --B_type
+                        "00000000000000000000" & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & '0' when "100", --B_type
+			                   "1" & instruction(30 downto 12) & "000000000000" when "111", --U_type
+                                           "0" & instruction(30 downto 12) & "000000000000" when "110", --U_type
            "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ" when others;
  
 end holistic;

@@ -162,7 +162,7 @@ begin
                        "00000000000000000000" & instruction(31 downto 20) when "000",
 		       "11111111111111111111" & instruction(31 downto 25) & instruction(11 downto 7) when "011",  
                        "00000000000000000000" & instruction(31 downto 25) & instruction(11 downto 7) when "010",
-		       "11111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) when "101",	-- I suspect that there is an issue here. 
+		       "11111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) when "101",	-- I suspect that there is an issue here. Ask Ken how is the immediate of the b-type structure built.
                        "00000000000000000000" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) when "100",
 			       "111111111111" & instruction(31 downto 12) when "111", 
                                "000000000000" & instruction(31 downto 12) when "110", 

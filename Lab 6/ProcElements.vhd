@@ -53,66 +53,67 @@ begin
 		"00" when others;
 
 	with opcode & funct3 select
-	MemRead <= '0' when "0000011010", --lui
+	MemRead <= '0' when "0000011010", --lw
 		 '1' when others;
 
 	with opcode & funct3 select
-	MemtoReg <='1' when "0000011010", --lw
-     		   '1' when "0100011010", --sw
-		   '1' when "1100011000", --beq
-		   '1' when "1100011001", --bne
+	MemtoReg <= '1' when "0000011010", --lw
+     		--   '1' when "0100011010", --sw
+		 --  '1' when "1100011000", --beq
+		 --  '1' when "1100011001", --bne
 		 '0' when others;
 
-	with opcode & funct3 & funct7 select
-	ALUCtrl <= "00000" when "01100110000000000", --add
-		 "00001" when "01100110000100000", --sub
-		 "00010" when "0010011000-------",  --addi
-		 "00011" when "01100111110000000", --and
-		 "00100" when "0010011111-------", 	   --andi
-		 "00101" when "01100111100000000", --or
-		 "00110" when "0010011110-------", 	   --ori
-		 "00111" when "01100110010000000", --sll
-		 "01000" when "00100110010000000", --slli
-		 "01001" when "01100111000000000", --srl
-		 "01010" when "00100111010100000", --srli
-		 "00000" when "0000011010-------", 	   --lw
-		 "00000" when "0100011010-------", 	   --sw
-		 "00001" when "1100011000-------", 	   --beq
-		 "00001" when "1100011001-------", 	   --bne
-		 "00000" when "0110111----------", 	   --lui
-		 "11111" when others;
+
+	ALUCtrl <= "00000" when opcode = "0110011" AND funct3 = "000" AND funct7 = "0000000000" else --add
+		 "00001" when opcode = "0110011" AND funct3 ="000" AND  funct7 = "0100000" else --sub
+		 "00010" when opcode ="0010011" AND funct3 ="000" else --addi
+		 "00011" when opcode ="0110011" AND funct3= "111" AND funct7 = "0000000" else --and
+		 "00100" when opcode= "0010011" AND  funct3 ="111" else	   --andi
+		 "00101" when opcode = "0110011" AND funct3 ="110" AND  funct7 = "0100000" else  --or
+		 "00110" when opcode = "0010011" AND funct3 ="110" else   --ori
+		 "00111" when opcode = "0110011" AND funct3 ="001" AND  funct7 = "0000000" else --sll
+		 "01000" when opcode = "0010011" AND funct3 ="001" AND  funct7 = "0000000" else --slli
+		 "01001" when opcode = "0110011" AND funct3 ="100" AND  funct7 = "0000000" else --srl
+		 "01010" when opcode = "0010011" AND funct3 ="101" AND  funct7 = "0100000" else --srli
+		 "00000" when opcode = "0000011" AND funct3 ="010" else     --lw
+		 "00000" when opcode = "0100011" AND funct3 ="010" else	   --sw
+		 "00001" when opcode = "1100011" AND funct3 ="000" else	 --beq
+		 "00001" when opcode = "1100011" AND funct3 ="001" else  --bne
+		 "00000" when opcode = "0110111" else	   --lui
+		 "11111";
 
 	with opcode & funct3 select
 	MemWrite <= '1' when "0100011010", 	   --sw
 		 '0' when others;
 
-	with opcode & funct3 & funct7 select
- 	ALUSrc <= '0' when "01100110000000000",	   --add
-	          '0' when "01100110000100000",    --sub
-	          '0' when "01100111110000000",	   --and
-	          '0' when "01100111100000000",     --or
-		  '0' when "1100011000-------",	   --beq
-		  '0' when "1100011001-------",	   --bne
-		  '0' when "0110111----------",		   --lui
-	          '1' when others;
+ 	ALUSrc <= '0' when opcode = "0110011" AND funct3 = "000" AND funct7 = "0000000"	     else --add
+	          '0' when opcode = "0110011" AND funct3 = "000" AND funct7 = "0100000"	     else --sub
+	          '0' when opcode = "0110011" AND funct3 = "111" AND funct7 = "0000000"	     else --and
+	          '0' when opcode = "0110011" AND funct3 = "110" AND funct7 = "0000000"      else --or
+		  '0' when opcode = "1100011" AND funct3 = "000"     			     else --beq
+		  '0' when opcode = "1100011" AND funct3 = "001"     			     else --bne
+		 -- '0' when opcode = "0110111"  						     else --lui
+	          '1' ;
 
-	with opcode & funct3 select
-	RegWrite <='0' when "0100011010",	   --sw	
-		   '0' when "1100011000", 		   --beq
-		   '0' when "1100011001",		   --bne
-		   '0' when "0110111---",		   --lui
-		(not Clk) when others;
+	
+	RegWrite <='0' when opcode="0100011" AND funct3="010" else	   --sw	
+		   '0' when opcode="1100011" AND funct3="000" else	   --beq
+		   '0' when opcode="1100011" AND funct3="001" else	    --bne
+		  -- '0' when opcode="0110111" else	   --lui
+		(not clk);
 
-	with opcode & funct3 select
-	ImmGen <= "00" when "0010011000", 		  --addi
-		  "00" when "0010011111", 		  --andi
- 		  "00" when "0010011110", 		 --ori
-   		  "00" when "0000011010",                --lw
-		  "01" when "0100011010", 		 --sw
-	          "10" when "1100011000", 		 --beq
-		  "10" when "1100011001", 		 --bne
-		  "11" when "0110111---", 		 --lui
-	          "ZZ" when others;
+	
+	ImmGen <= "00" when opcode= "0010011" AND  funct3 ="000" else		  --addi
+		  "00" when opcode= "0010011" AND  funct3 ="111" else		  --andi
+ 		  "00" when opcode = "0010011" AND funct3 ="110" else  --ori
+   		  "00" when opcode = "0000011" AND funct3 ="010" else              --lw
+		  "01" when opcode="0100011" AND funct3="010" else		 --sw
+	          "10" when opcode="1100011" AND funct3="000" else	--beq
+		  "10" when opcode="1100011" AND funct3="001" else	--bne
+		  "11" when opcode = "0110111" else	 --lui
+		  "00" when opcode ="0010011" AND funct3 ="001" AND funct7 ="0000000" else
+		   "00" when opcode ="0010011" AND funct3 ="101" AND funct7 ="0100000" else
+	          "ZZ";
 --
 end Boss;
 
@@ -132,15 +133,13 @@ end entity ProgramCounter;
 architecture executive of ProgramCounter is
 
 begin
-
-Process(Reset,Clock)
-begin
--- Add your code here	
+-- Add your code here
+	Process(Reset,Clock)
+	begin	
  		if Reset = '1' then
-			PCout <= "00000000010000000000000000000000"; --reset to start at address 0x00400000
-		elsif falling_edge(Clock) then --not sure if falling_edge or rising_edge
+			PCout <= X"003FFFFC"; --reset to start at address 0x003FFFFC
+		elsif rising_edge(Clock) then --not sure if falling_edge or rising_edge
 			PCout <= PCin; --maintains the address of the next instruction
-		else
 		end if;
 	end process; 
 end executive;
