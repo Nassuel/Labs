@@ -109,7 +109,7 @@ architecture holistic of Processor is
 
 	-- Registers Output
 	signal ReadD1      : std_logic_vector(31 downto 0);	-- Registers to ALU
-	signal ReadD2      : std_logic_vector(31 downto 0);	-- Registers to ALUMux
+	signal ReadD2      : std_logic_vector(31 downto 0);	-- Registers to ALUMux, RAM
 
 	-- Data Memory Output
 	signal ReadD	   : std_logic_vector(31 downto 0);	-- 
@@ -126,6 +126,8 @@ architecture holistic of Processor is
 	
 	--ImmGen output
 	signal ImmGenOut   : std_logic_vector(31 downto 0);    -- ImmGen to AddMux, ALUMux 
+	
+	signal finally : std_logic_vector(29 downto 0);
 begin
 	-- Add your code here
 	-- TO DO: 1) write all internal in/out signals for components
@@ -149,14 +151,16 @@ begin
 	Regs: Registers      port map(instruction(19 downto 15), instruction(24 downto 20), instruction(11 downto 7), DMemMuxOut, CtrlRegWrite, ReadD1, ReadD2);
 
 	ArithLU: ALU         port map(ReadD1, ALUMuxOut, CtrlALUCtrl, ALUZero, ALUResultOut);
+	
+	finally <= "0000"& ALUResultOut(27 downto 2);
 
-	DMem: RAM	     port map(reset, clock, CtrlMemRead, CtrlMemWrite, ALUResultOut(31 downto 2), ReadD2, ReadD);
+	DMem: RAM	     port map(reset, clock, CtrlMemRead, CtrlMemWrite, finally, ReadD2, ReadD);
 
 	with CtrlBranch & ALUZero select
 	BranchEqNot <=   '1' when "101",
                          '1' when "010",
 		         '0' when others;
-
+	
 	with CtrlImmGen & instruction(31) select
 	ImmGenOut <=   "111111111111111111111" & instruction(30 downto 20) when "001",  --I_type
                        "000000000000000000000" & instruction(30 downto 20) when "000",  --I_type
@@ -164,8 +168,12 @@ begin
                        "000000000000000000000" & instruction(30 downto 25) & instruction(11 downto 7) when "010",  --S_type
 		        "11111111111111111111" & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & '0' when "101", --B_type
                         "00000000000000000000" & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & '0' when "100", --B_type
+			     -- "111111111111" & instruction(31 downto 12) when "111", --U_type
+                             -- "000000000000" & instruction(31 downto 12) when "110", --U_type
 			                   "1" & instruction(30 downto 12) & "000000000000" when "111", --U_type
                                            "0" & instruction(30 downto 12) & "000000000000" when "110", --U_type
-           "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ" when others;
+            "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ" when others;
+		-- "00000000000000000000000000000000" when others;
  
 end holistic;
+
