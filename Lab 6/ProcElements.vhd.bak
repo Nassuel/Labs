@@ -57,7 +57,7 @@ begin
 		 '1' when others;
 
 	with opcode & funct3 select
-	MemtoReg <= '0' when "0000011010", --lw
+	MemtoReg <= '1' when "0000011010", --lw
      		--   '1' when "0100011010", --sw
 		 --  '1' when "1100011000", --beq
 		 --  '1' when "1100011001", --bne

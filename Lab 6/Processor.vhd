@@ -129,17 +129,15 @@ architecture holistic of Processor is
 	
 	signal finally : std_logic_vector(29 downto 0);
 begin
-	-- Add your code here
-	-- TO DO: 1) write all internal in/out signals for components
-        --        2) port map all signals
+-- Add your code here
 	-- Muxes
-	ALUMux: BusMux2to1   port map(CtrlALUSrc, ReadD2, ImmGenOut, ALUMuxOut); -- ImmGen output goes into the missing port
+	ALUMux: BusMux2to1   port map(CtrlALUSrc, ReadD2, ImmGenOut, ALUMuxOut);
 	AddMux: BusMux2to1   port map(BranchEqNot, AddOut1, AddOut2, AddSumMuxOut);
 	DMemMux: BusMux2to1  port map(CtrlMemtoReg, ALUResultOut, ReadD, DMemMuxOut);
 
 	-- Adders
 	PreAdder: adder_subtracter port map(PCOut, "00000000000000000000000000000100", '0', AddOut1, c01);
-	AddSumAdder: adder_subtracter port map(PCOut, ImmGenOut, '0', AddOut2, c02); -- ImmGen output should be on missing spot
+	AddSumAdder: adder_subtracter port map(PCOut, ImmGenOut, '0', AddOut2, c02);
 
 	-- Major components
 	PC: ProgramCounter   port map(reset, clock, AddSumMuxOut, PCOut);
@@ -168,12 +166,8 @@ begin
                        "000000000000000000000" & instruction(30 downto 25) & instruction(11 downto 7) when "010",  --S_type
 		        "11111111111111111111" & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & '0' when "101", --B_type
                         "00000000000000000000" & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & '0' when "100", --B_type
-			     -- "111111111111" & instruction(31 downto 12) when "111", --U_type
-                             -- "000000000000" & instruction(31 downto 12) when "110", --U_type
 			                   "1" & instruction(30 downto 12) & "000000000000" when "111", --U_type
                                            "0" & instruction(30 downto 12) & "000000000000" when "110", --U_type
             "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ" when others;
-		-- "00000000000000000000000000000000" when others;
  
 end holistic;
-
