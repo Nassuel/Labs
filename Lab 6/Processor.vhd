@@ -129,15 +129,17 @@ architecture holistic of Processor is
 	
 	signal finally : std_logic_vector(29 downto 0);
 begin
--- Add your code here
+	-- Add your code here
+	-- TO DO: 1) write all internal in/out signals for components
+        --        2) port map all signals
 	-- Muxes
-	ALUMux: BusMux2to1   port map(CtrlALUSrc, ReadD2, ImmGenOut, ALUMuxOut);
+	ALUMux: BusMux2to1   port map(CtrlALUSrc, ReadD2, ImmGenOut, ALUMuxOut); -- ImmGen output goes into the missing port
 	AddMux: BusMux2to1   port map(BranchEqNot, AddOut1, AddOut2, AddSumMuxOut);
 	DMemMux: BusMux2to1  port map(CtrlMemtoReg, ALUResultOut, ReadD, DMemMuxOut);
 
 	-- Adders
 	PreAdder: adder_subtracter port map(PCOut, "00000000000000000000000000000100", '0', AddOut1, c01);
-	AddSumAdder: adder_subtracter port map(PCOut, ImmGenOut, '0', AddOut2, c02);
+	AddSumAdder: adder_subtracter port map(PCOut, ImmGenOut, '0', AddOut2, c02); -- ImmGen output should be on missing spot
 
 	-- Major components
 	PC: ProgramCounter   port map(reset, clock, AddSumMuxOut, PCOut);
@@ -171,3 +173,4 @@ begin
             "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ" when others;
  
 end holistic;
+
